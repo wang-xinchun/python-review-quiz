@@ -1,0 +1,38 @@
+# Python cache and local environments
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+env/
+
+# Build and generated outputs
+build/
+dist/
+output/
+exports/
+*.log
+
+# Local app data
+data/*.db
+data/*.sqlite
+data/*.sqlite3
+data/*.csv
+data/*.json
+!data/.gitkeep
+
+# Course source materials kept local only
+课程PPT/
+案例(勿抄).doc
+
+# Office temporary files
+~$*
+*.tmp
+
+# IDE and OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
