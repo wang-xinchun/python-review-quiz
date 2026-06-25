@@ -4,8 +4,9 @@ from pathlib import Path
 
 from src.models import Question
 from src.question_bank import add_question, count_questions, get_chapters, init_db, list_questions
-from src.quiz_engine import QuizSession, calculate_score
+from src.quiz_engine import QuizSession, calculate_score, find_unanswered_questions
 from src.record_manager import list_quiz_records, list_wrong_answers, save_quiz_result
+from src.report_exporter import export_report, generate_report_text
 
 
 class CoreFlowTest(unittest.TestCase):
@@ -64,6 +65,27 @@ class CoreFlowTest(unittest.TestCase):
         self.assertEqual(len(records), 1)
         self.assertEqual(len(wrong_answers), 1)
         self.assertEqual(wrong_answers[0]["correct_answer"], "对")
+
+    def test_find_unanswered_questions(self):
+        unanswered = find_unanswered_questions(
+            [self.question_a, self.question_b],
+            {self.question_a.id: "A", self.question_b.id: "  "},
+        )
+
+        self.assertEqual(len(unanswered), 1)
+        self.assertEqual(unanswered[0].id, self.question_b.id)
+
+    def test_report_export_uses_selected_database(self):
+        session = QuizSession([self.question_a, self.question_b], "全部章节")
+        details = session.grade({self.question_a.id: "A", self.question_b.id: "对"})
+        save_quiz_result("全部章节", details, self.db_path)
+
+        report_text = generate_report_text(self.db_path)
+        output_path = export_report(self.db_path, Path(self.temp_dir.name))
+
+        self.assertIn("Python课程智能复习与自测系统学习报告", report_text)
+        self.assertIn("平均正确率：100.0%", report_text)
+        self.assertTrue(output_path.exists())
 
 
 if __name__ == "__main__":

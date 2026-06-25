@@ -49,6 +49,8 @@ python -m pip install -r requirements.txt
 python -m streamlit run app.py
 ```
 
+应用启动后会自动初始化 SQLite 数据库，并从 `data/seed_questions.json` 导入初始题库。
+
 默认访问地址：
 
 ```text
@@ -70,6 +72,15 @@ data/seed_questions.json 初始题库
 tests/                 自动化测试
 docs/                  项目规划、协作记录和测试文档
 ```
+
+## 第一版功能
+
+1. 首页概览：展示题量、章节数、练习次数、正确率和错题数。
+2. 题库管理：支持题库筛选、关键词搜索和新增题目。
+3. 自测练习：支持随机抽题、未答题校验、自动判分和解析展示。
+4. 错题本：自动记录错题，并支持从错题生成回练题目。
+5. 学习统计与报告：展示章节正确率、错题分布，并导出 Markdown 学习报告。
+6. Agent 协作记录：展示项目开发中的关键提示词和协作过程。
 
 ## 说明
 

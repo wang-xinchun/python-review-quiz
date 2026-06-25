@@ -3,7 +3,7 @@ from __future__ import annotations
 from datetime import datetime
 from pathlib import Path
 
-from .config import EXPORT_DIR, ensure_directories
+from .config import DB_PATH, EXPORT_DIR, ensure_directories
 from .record_manager import list_quiz_records, list_wrong_answers
 from .statistics_service import chapter_accuracy, get_overview, wrong_counts_by_chapter
 
@@ -12,12 +12,12 @@ def percent(value: float) -> str:
     return f"{value * 100:.1f}%"
 
 
-def generate_report_text() -> str:
-    overview = get_overview()
-    chapters = chapter_accuracy()
-    wrong_stats = wrong_counts_by_chapter()
-    recent_records = list_quiz_records(limit=5)
-    wrong_answers = list_wrong_answers(limit=5)
+def generate_report_text(db_path: Path = DB_PATH) -> str:
+    overview = get_overview(db_path)
+    chapters = chapter_accuracy(db_path)
+    wrong_stats = wrong_counts_by_chapter(db_path)
+    recent_records = list_quiz_records(limit=5, db_path=db_path)
+    wrong_answers = list_wrong_answers(limit=5, db_path=db_path)
     weak_chapters = sorted(chapters, key=lambda item: item["accuracy"])[:3]
 
     lines = [
@@ -82,11 +82,12 @@ def generate_report_text() -> str:
     return "\n".join(lines) + "\n"
 
 
-def export_report() -> Path:
+def export_report(db_path: Path = DB_PATH, export_dir: Path = EXPORT_DIR) -> Path:
     ensure_directories()
-    report_text = generate_report_text()
+    export_dir.mkdir(exist_ok=True)
+    report_text = generate_report_text(db_path)
     file_name = f"study_report_{datetime.now().strftime('%Y%m%d_%H%M%S')}.md"
-    output_path = EXPORT_DIR / file_name
+    output_path = export_dir / file_name
     with open(output_path, "w", encoding="utf-8") as file:
         file.write(report_text)
     return output_path

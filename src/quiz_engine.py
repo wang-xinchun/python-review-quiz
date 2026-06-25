@@ -49,3 +49,14 @@ def calculate_score(details: list[AnswerDetail]) -> tuple[int, int, int]:
     correct_count = sum(1 for detail in details if detail.is_correct)
     score = round(correct_count / total * 100) if total else 0
     return score, total, correct_count
+
+
+def find_unanswered_questions(questions: list[Question], answers: dict[int, str]) -> list[Question]:
+    unanswered: list[Question] = []
+    for question in questions:
+        if question.id is None:
+            continue
+        answer = answers.get(question.id, "")
+        if not str(answer).strip():
+            unanswered.append(question)
+    return unanswered

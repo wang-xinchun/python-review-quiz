@@ -7,8 +7,8 @@ import altair as alt
 import pandas as pd
 import streamlit as st
 
-from src.config import EXPORT_DIR, ensure_directories
-from src.models import DIFFICULTIES, QUESTION_TYPES, Question
+from src.config import ensure_directories
+from src.models import DIFFICULTIES, Question
 from src.question_bank import (
     add_question,
     count_questions,
@@ -18,7 +18,7 @@ from src.question_bank import (
     list_questions,
     seed_from_json,
 )
-from src.quiz_engine import build_quiz, build_quiz_from_ids
+from src.quiz_engine import build_quiz, build_quiz_from_ids, find_unanswered_questions
 from src.record_manager import list_quiz_records, list_wrong_answers, save_quiz_result, unique_wrong_question_ids
 from src.report_exporter import export_report, generate_report_text
 from src.statistics_service import chapter_accuracy, get_overview, question_counts_by_chapter, wrong_counts_by_chapter
@@ -124,7 +124,16 @@ def render_home() -> None:
     st.subheader("最近练习")
     records = list_quiz_records(limit=8)
     if records:
-        st.dataframe(pd.DataFrame(records), use_container_width=True, hide_index=True)
+        records_df = pd.DataFrame(records).rename(
+            columns={
+                "quiz_time": "时间",
+                "chapter_scope": "章节范围",
+                "score": "得分",
+                "total": "总题数",
+                "correct_count": "正确数",
+            }
+        )
+        st.dataframe(records_df[["时间", "章节范围", "得分", "正确数", "总题数"]], use_container_width=True, hide_index=True)
     else:
         st.info("暂无练习记录。")
 
@@ -201,10 +210,11 @@ def render_quiz_question(question: Question) -> str:
     st.markdown(f"**{question.id}. {question.stem}**")
     key = f"answer_{question.id}"
     if question.question_type == "single":
-        selected = st.radio("选择答案", question.options, key=key, label_visibility="collapsed")
-        return option_value(selected)
+        selected = st.radio("选择答案", question.options, key=key, index=None, label_visibility="collapsed")
+        return option_value(selected) if selected else ""
     if question.question_type == "judge":
-        return st.radio("选择答案", ["对", "错"], key=key, horizontal=True, label_visibility="collapsed")
+        selected = st.radio("选择答案", ["对", "错"], key=key, index=None, horizontal=True, label_visibility="collapsed")
+        return selected or ""
     return st.text_input("填写答案", key=key, label_visibility="collapsed")
 
 
@@ -240,21 +250,26 @@ def render_quiz() -> None:
     with st.form("quiz_form"):
         answers: dict[int, str] = {}
         for question in questions:
-            st.container(border=True)
-            answers[int(question.id)] = render_quiz_question(question)
+            with st.container(border=True):
+                answers[int(question.id)] = render_quiz_question(question)
             st.write("")
         submitted = st.form_submit_button("提交答案")
 
     if submitted:
-        details = session.grade(answers)
-        record = save_quiz_result(session.chapter_scope, details)
-        st.session_state.quiz_result = {
-            "record_id": record.id,
-            "score": record.score,
-            "total": record.total,
-            "correct_count": record.correct_count,
-            "details": details,
-        }
+        unanswered = find_unanswered_questions(questions, answers)
+        if unanswered:
+            st.warning(f"还有 {len(unanswered)} 道题未作答，请完成后再提交。")
+            st.session_state.quiz_result = None
+        else:
+            details = session.grade(answers)
+            record = save_quiz_result(session.chapter_scope, details)
+            st.session_state.quiz_result = {
+                "record_id": record.id,
+                "score": record.score,
+                "total": record.total,
+                "correct_count": record.correct_count,
+                "details": details,
+            }
 
     result = st.session_state.get("quiz_result")
     if result:
