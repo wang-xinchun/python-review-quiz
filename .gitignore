@@ -4,6 +4,7 @@ __pycache__/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+.playwright-cli/
 .venv/
 venv/
 env/
@@ -22,6 +23,7 @@ data/*.sqlite3
 data/*.csv
 data/*.json
 !data/.gitkeep
+!data/seed_questions.json
 
 # Course source materials kept local only
 课程PPT/

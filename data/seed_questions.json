@@ -1,0 +1,380 @@
+[
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "Python 程序文件常用的扩展名是（ ）。",
+    "options": ["A. .py", "B. .doc", "C. .xls", "D. .ppt"],
+    "answer": "A",
+    "explanation": "Python 源代码文件通常使用 .py 作为扩展名。"
+  },
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "Python 是一种解释型高级程序设计语言。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "Python 通常被认为是解释型高级语言，语法简洁，适合快速开发。"
+  },
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "下列哪个函数常用于在控制台输出内容？",
+    "options": ["A. input()", "B. print()", "C. type()", "D. int()"],
+    "answer": "B",
+    "explanation": "print() 用于输出内容，input() 用于接收用户输入。"
+  },
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "Python 中用于接收键盘输入的内置函数是 ____。",
+    "options": [],
+    "answer": "input",
+    "explanation": "input() 可以读取用户从键盘输入的字符串。"
+  },
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "良好的编码规范有助于提高程序可读性和可维护性。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "编码规范可以让代码结构更清晰，也方便后期维护。"
+  },
+  {
+    "chapter": "第1章 Python导论",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "Python 最适合用来描述程序注释的符号是（ ）。",
+    "options": ["A. //", "B. #", "C. <!-- -->", "D. /* */"],
+    "answer": "B",
+    "explanation": "Python 中单行注释通常以 # 开头。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "下列哪个是 Python 中的整数类型？",
+    "options": ["A. str", "B. int", "C. list", "D. dict"],
+    "answer": "B",
+    "explanation": "int 表示整数类型。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "变量名可以以数字开头。",
+    "options": ["对", "错"],
+    "answer": "错",
+    "explanation": "Python 标识符不能以数字开头。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "表达式 10 // 3 的结果是（ ）。",
+    "options": ["A. 3", "B. 3.33", "C. 1", "D. 30"],
+    "answer": "A",
+    "explanation": "// 是整除运算符，10 // 3 的结果为 3。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "用于查看对象类型的内置函数是 ____。",
+    "options": [],
+    "answer": "type",
+    "explanation": "type() 可以返回对象的数据类型。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "字符串 '123' 可以直接参与数值加法运算。",
+    "options": ["对", "错"],
+    "answer": "错",
+    "explanation": "字符串需要先通过 int() 或 float() 转换为数值类型。"
+  },
+  {
+    "chapter": "第2章 数据类型与表达式",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "下列哪个表达式可以将字符串 '8' 转换为整数 8？",
+    "options": ["A. str('8')", "B. int('8')", "C. list('8')", "D. bool('8')"],
+    "answer": "B",
+    "explanation": "int('8') 可以将数字字符串转换为整数。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "Python 中用于条件判断的关键字是（ ）。",
+    "options": ["A. for", "B. while", "C. if", "D. def"],
+    "answer": "C",
+    "explanation": "if 用于条件判断。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "for 循环常用于遍历序列中的元素。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "for 循环可以遍历列表、元组、字符串等序列。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "range(5) 生成的整数序列不包含哪个数字？",
+    "options": ["A. 0", "B. 2", "C. 4", "D. 5"],
+    "answer": "D",
+    "explanation": "range(5) 生成 0 到 4，不包含 5。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "在循环中用于跳出整个循环的关键字是 ____。",
+    "options": [],
+    "answer": "break",
+    "explanation": "break 用于终止当前循环。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "while 循环的条件一直为 True 时，可能形成死循环。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "如果没有合适的退出条件，while True 可能形成死循环。"
+  },
+  {
+    "chapter": "第3章 程序流程控制",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "下列哪个关键字用于跳过本次循环并进入下一次循环？",
+    "options": ["A. break", "B. continue", "C. return", "D. pass"],
+    "answer": "B",
+    "explanation": "continue 用于结束本次循环，继续下一次循环。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "下列哪种数据类型是可变序列？",
+    "options": ["A. tuple", "B. str", "C. list", "D. int"],
+    "answer": "C",
+    "explanation": "列表 list 是可变序列，可以增加、删除和修改元素。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "元组创建后其中的元素通常不能被修改。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "元组是不可变序列。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "字典中保存数据的基本形式是（ ）。",
+    "options": ["A. 键值对", "B. 只有键", "C. 只有值", "D. 固定下标"],
+    "answer": "A",
+    "explanation": "字典使用键值对保存数据。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "集合中元素的一个重要特点是元素值 ____。",
+    "options": [],
+    "answer": "唯一",
+    "explanation": "集合中的元素无序且不重复。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "字符串可以通过下标访问其中的字符。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "字符串是有序序列，可以使用下标访问字符。"
+  },
+  {
+    "chapter": "第4章 序列与字符串",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "列表 list_data = [1, 2, 3] 中 list_data[-1] 的值是（ ）。",
+    "options": ["A. 1", "B. 2", "C. 3", "D. -1"],
+    "answer": "C",
+    "explanation": "下标 -1 表示最后一个元素。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "Python 中定义函数使用的关键字是（ ）。",
+    "options": ["A. class", "B. def", "C. import", "D. return"],
+    "answer": "B",
+    "explanation": "def 用于定义函数。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "函数可以提高代码复用性。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "将重复逻辑封装成函数可以减少重复代码。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "函数执行结果通常可以通过哪个关键字返回？",
+    "options": ["A. import", "B. return", "C. break", "D. global"],
+    "answer": "B",
+    "explanation": "return 用于返回函数结果。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "导入模块常用的关键字是 ____。",
+    "options": [],
+    "answer": "import",
+    "explanation": "import 用于导入模块或包。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "局部变量在函数外部一定可以直接访问。",
+    "options": ["对", "错"],
+    "answer": "错",
+    "explanation": "局部变量的作用域通常只在函数内部。"
+  },
+  {
+    "chapter": "第5章 函数与模块",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "下列哪个是匿名函数的关键字？",
+    "options": ["A. lambda", "B. def", "C. class", "D. with"],
+    "answer": "A",
+    "explanation": "lambda 可用于创建简单的匿名函数。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "Python 中定义类使用的关键字是（ ）。",
+    "options": ["A. def", "B. class", "C. import", "D. while"],
+    "answer": "B",
+    "explanation": "class 用于定义类。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "对象是类的实例。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "类是抽象模板，对象是根据类创建出的实例。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "类中的函数通常称为（ ）。",
+    "options": ["A. 方法", "B. 模块", "C. 包", "D. 注释"],
+    "answer": "A",
+    "explanation": "类中定义的函数通常称为方法。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "创建对象的过程也可以称为类的 ____。",
+    "options": [],
+    "answer": "实例化",
+    "explanation": "根据类创建对象的过程称为实例化。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "继承可以实现代码复用。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "子类可以继承父类的属性和方法，从而复用代码。"
+  },
+  {
+    "chapter": "第6章 面向对象程序设计",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "Python 类中常用的构造方法名称是（ ）。",
+    "options": ["A. __init__", "B. __main__", "C. __str__", "D. __len__"],
+    "answer": "A",
+    "explanation": "__init__ 通常用于对象初始化。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "Python 中打开文件常用的内置函数是（ ）。",
+    "options": ["A. open()", "B. input()", "C. print()", "D. type()"],
+    "answer": "A",
+    "explanation": "open() 用于打开文件。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "judge",
+    "difficulty": "基础",
+    "stem": "使用 with 语句打开文件可以帮助自动关闭文件。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "with 上下文管理语句可以在代码块结束后自动释放资源。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "single",
+    "difficulty": "基础",
+    "stem": "以只读方式打开文本文件常用的模式是（ ）。",
+    "options": ["A. r", "B. w", "C. a", "D. x"],
+    "answer": "A",
+    "explanation": "r 表示只读模式。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "blank",
+    "difficulty": "基础",
+    "stem": "写入文本文件时，为避免中文乱码，常指定 encoding=\"____\"。",
+    "options": [],
+    "answer": "utf-8",
+    "explanation": "utf-8 是常用的 Unicode 编码，适合保存中文文本。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "judge",
+    "difficulty": "中等",
+    "stem": "文件路径和目录操作可以使用 pathlib 模块完成。",
+    "options": ["对", "错"],
+    "answer": "对",
+    "explanation": "pathlib 提供面向对象的路径操作方式。"
+  },
+  {
+    "chapter": "第7章 文件操作",
+    "question_type": "single",
+    "difficulty": "中等",
+    "stem": "打开文件后，哪种做法更有利于资源释放？",
+    "options": ["A. 一直不关闭文件", "B. 使用 with open(...) as file", "C. 只写 open()", "D. 用 print() 关闭"],
+    "answer": "B",
+    "explanation": "with open(...) as file 可以在代码块结束后自动关闭文件。"
+  }
+]

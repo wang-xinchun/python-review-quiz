@@ -13,7 +13,15 @@ Python课程智能复习与自测系统。
 
 ## 当前阶段
 
-当前主要完成项目规划与范围审查，代码实现将在后续阶段推进。
+当前已经完成第一版核心功能开发：
+
+1. 题库管理。
+2. 自测练习。
+3. 自动判分。
+4. 错题记录。
+5. 学习统计。
+6. 学习报告导出。
+7. Agent 协作记录展示。
 
 已完成文档：
 
@@ -22,6 +30,46 @@ Python课程智能复习与自测系统。
 3. 最终报告结构草案。
 4. 开发任务清单。
 5. 项目范围审查与知识点覆盖。
+6. Agent 工具与插件使用规划。
+7. Agent 协作记录。
+8. 数据库与模块设计。
+9. 测试记录和问题修复记录。
+
+## 运行方式
+
+安装依赖：
+
+```bash
+python -m pip install -r requirements.txt
+```
+
+启动应用：
+
+```bash
+python -m streamlit run app.py
+```
+
+默认访问地址：
+
+```text
+http://localhost:8501
+```
+
+运行测试：
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+## 目录结构
+
+```text
+app.py                 Streamlit 应用入口
+src/                   核心业务模块
+data/seed_questions.json 初始题库
+tests/                 自动化测试
+docs/                  项目规划、协作记录和测试文档
+```
 
 ## 说明
 
