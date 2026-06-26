@@ -273,3 +273,42 @@ Agent 输出摘要：
 2. 自动化测试 7 项通过。
 3. Playwright CLI 验证首页首屏、移动端首页、自测未作答提示和报告预览 Tab。
 4. 控制台无 error；存在少量 Vega 图表 warning，不影响核心功能和页面渲染。
+
+## AI-008 使用 playwright-interactive 交互式优化
+
+记录编号：AI-008
+
+使用时间：2026年6月26日
+
+开发阶段：前端细节复查与交互式视觉调优
+
+使用目标：尝试使用 `playwright-interactive` 控制本地浏览器，直接观察页面并继续优化前端展示效果
+
+用户提示词：
+
+```text
+[$playwright-interactive](C:\Users\11983\.codex\skills\playwright-interactive\SKILL.md) 你可以尝试控制我的电脑，去优化前端效果
+```
+
+Agent 输出摘要：
+
+使用 `node_repl` 启动 Playwright 交互浏览器。由于 Playwright 自带 Chromium 尚未安装，改用本机 Microsoft Edge 通道打开本地 Streamlit 应用。通过桌面和移动端视口截图继续观察界面，发现默认 Streamlit 工具栏和红色控件主色影响展示一致性，并发现报告预览用纯文本框呈现不够像成品。
+
+采纳内容：
+
+1. 新增 `.streamlit/config.toml`，统一 Streamlit 主色为蓝色，并设置背景、侧栏和文字色。
+2. 隐藏 Streamlit 默认 `Deploy`、菜单和页脚等展示干扰项。
+3. 将报告预览由纯文本框改为 Markdown 渲染预览，并保留“查看 Markdown 原文”入口。
+4. 使用交互式 Playwright 检查桌面首页、报告页、自测页和移动端首页。
+
+人工判断：
+
+这轮优化让应用更像独立完成的课程作品，减少了框架默认痕迹，同时保留了报告文本的可复制和可导出能力。
+
+验证结果：
+
+1. `compileall` 语法检查通过。
+2. 自动化测试 7 项通过。
+3. 交互式 Playwright 检查显示：顶部 `Deploy` 文本已不可见，页面无横向滚动。
+4. 报告预览 Tab 能显示渲染后的 Markdown 报告，下载和导出按钮仍存在。
+5. 移动端 390px 宽度下首页标题、指标卡和图表入口正常显示。

@@ -68,6 +68,18 @@ def page_style() -> None:
             background: var(--app-bg);
             color: var(--text-main);
         }
+        header[data-testid="stHeader"] {
+            background: transparent;
+            height: 0;
+        }
+        [data-testid="stToolbar"],
+        [data-testid="stDecoration"],
+        .stDeployButton,
+        #MainMenu,
+        footer {
+            display: none !important;
+            visibility: hidden !important;
+        }
         .block-container {
             padding-top: 1.5rem;
             padding-bottom: 4rem;
@@ -664,11 +676,15 @@ def render_statistics_and_report() -> None:
 
     with report_tab:
         report_text = generate_report_text()
-        st.download_button("下载报告文本", data=report_text, file_name="study_report.md", mime="text/markdown")
-        if st.button("导出到本地 exports 目录"):
+        col1, col2 = st.columns([1, 1])
+        col1.download_button("下载报告文本", data=report_text, file_name="study_report.md", mime="text/markdown", use_container_width=True)
+        if col2.button("导出到本地 exports 目录", use_container_width=True):
             output_path = export_report()
             st.success(f"已导出：{output_path}")
-        st.text_area("报告预览", report_text, height=360)
+        with st.container(border=True):
+            st.markdown(report_text)
+        with st.expander("查看 Markdown 原文"):
+            st.code(report_text, language="markdown")
 
 
 def render_agent_records() -> None:
