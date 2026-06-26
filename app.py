@@ -4,7 +4,6 @@ import json
 from html import escape
 from pathlib import Path
 
-import altair as alt
 import pandas as pd
 import streamlit as st
 
@@ -261,6 +260,43 @@ def page_style() -> None:
             line-height: 1.65;
             margin-bottom: 8px;
         }
+        .bar-list {
+            display: grid;
+            gap: 10px;
+            margin: 8px 0 14px;
+        }
+        .bar-row {
+            display: grid;
+            grid-template-columns: minmax(140px, 260px) 1fr minmax(48px, auto);
+            gap: 12px;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.7);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 10px 12px;
+        }
+        .bar-label {
+            color: var(--text-main);
+            font-weight: 680;
+            line-height: 1.35;
+        }
+        .bar-track {
+            height: 10px;
+            border-radius: 999px;
+            background: #e8eef6;
+            overflow: hidden;
+        }
+        .bar-fill {
+            height: 100%;
+            border-radius: inherit;
+            background: var(--blue);
+            min-width: 3px;
+        }
+        .bar-value {
+            color: var(--text-muted);
+            font-weight: 760;
+            text-align: right;
+        }
         div[data-testid="stVerticalBlockBorderWrapper"] {
             border-color: var(--line);
             border-radius: 8px;
@@ -313,6 +349,13 @@ def page_style() -> None:
             }
             .page-header h1 {
                 font-size: 1.58rem;
+            }
+            .bar-row {
+                grid-template-columns: 1fr;
+                gap: 8px;
+            }
+            .bar-value {
+                text-align: left;
             }
         }
         </style>
@@ -380,18 +423,26 @@ def question_dict(question: Question) -> dict:
     }
 
 
-def render_horizontal_bar(df: pd.DataFrame, value_col: str, label_col: str, color: str = "#0f6cbf") -> None:
-    chart = (
-        alt.Chart(df)
-        .mark_bar(color=color, cornerRadiusEnd=3)
-        .encode(
-            x=alt.X(f"{value_col}:Q", title=None),
-            y=alt.Y(f"{label_col}:N", title=None, sort=None, axis=alt.Axis(labelLimit=260)),
-            tooltip=[label_col, value_col],
+def render_horizontal_bar(df: pd.DataFrame, value_col: str, label_col: str, color: str = "#2563eb", suffix: str = "") -> None:
+    if df.empty:
+        return
+    max_value = max(float(df[value_col].max()), 1.0)
+    rows = []
+    for _, row in df.iterrows():
+        value = float(row[value_col])
+        width = max(value / max_value * 100, 2 if value > 0 else 0)
+        if value.is_integer():
+            display_value = str(int(value))
+        else:
+            display_value = f"{value:.1f}"
+        rows.append(
+            f'<div class="bar-row">'
+            f'<div class="bar-label">{safe_text(row[label_col])}</div>'
+            f'<div class="bar-track"><div class="bar-fill" style="width:{width:.2f}%; background:{safe_text(color)};"></div></div>'
+            f'<div class="bar-value">{safe_text(display_value + suffix)}</div>'
+            f"</div>"
         )
-        .properties(height=max(220, len(df) * 34))
-    )
-    st.altair_chart(chart, use_container_width=True)
+    st.markdown(f'<div class="bar-list">{"".join(rows)}</div>', unsafe_allow_html=True)
 
 
 def option_value(label: str) -> str:
@@ -655,7 +706,7 @@ def render_statistics_and_report() -> None:
             df = pd.DataFrame(accuracy)
             df["正确率"] = (df["accuracy"] * 100).round(1)
             chart_df = df.rename(columns={"chapter": "章节"})
-            render_horizontal_bar(chart_df, "正确率", "章节")
+            render_horizontal_bar(chart_df, "正确率", "章节", suffix="%")
             st.dataframe(
                 chart_df.rename(columns={"total": "答题数", "correct": "正确数", "accuracy": "正确率原值"})[
                     ["章节", "答题数", "正确数", "正确率"]
