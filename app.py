@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from html import escape
 from pathlib import Path
 
 import altair as alt
@@ -32,6 +33,12 @@ TYPE_LABELS = {
 
 LABEL_TO_TYPE = {label: key for key, label in TYPE_LABELS.items()}
 
+TYPE_TONES = {
+    "single": "blue",
+    "judge": "teal",
+    "blank": "orange",
+}
+
 
 def bootstrap() -> None:
     ensure_directories()
@@ -44,24 +51,306 @@ def page_style() -> None:
     st.markdown(
         """
         <style>
-        .block-container {
-            padding-top: 2rem;
-            max-width: 1180px;
+        :root {
+            --app-bg: #f6f8fb;
+            --surface: #ffffff;
+            --surface-soft: #f8fafc;
+            --text-main: #172033;
+            --text-muted: #64748b;
+            --line: #dbe3ef;
+            --blue: #2563eb;
+            --teal: #0f766e;
+            --orange: #c2410c;
+            --red: #dc2626;
+            --shadow: 0 10px 28px rgba(15, 23, 42, 0.07);
         }
-        .metric-card {
-            border: 1px solid #e5e7eb;
+        .stApp {
+            background: var(--app-bg);
+            color: var(--text-main);
+        }
+        .block-container {
+            padding-top: 1.5rem;
+            padding-bottom: 4rem;
+            max-width: 1220px;
+        }
+        section[data-testid="stSidebar"] {
+            background: #eef3f8;
+            border-right: 1px solid var(--line);
+        }
+        section[data-testid="stSidebar"] h2 {
+            letter-spacing: 0;
+            color: var(--text-main);
+        }
+        section[data-testid="stSidebar"] label[data-baseweb="radio"] {
             border-radius: 8px;
-            padding: 14px 16px;
+            padding: 4px 8px;
+            margin: 2px 0;
+        }
+        section[data-testid="stSidebar"] label[data-baseweb="radio"]:has(input:checked) {
             background: #ffffff;
+            border: 1px solid var(--line);
+            box-shadow: 0 6px 16px rgba(15, 23, 42, 0.06);
+        }
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 8px 0 22px;
+        }
+        .brand-mark {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            border-radius: 8px;
+            color: #ffffff;
+            font-weight: 800;
+            background: #172033;
+            box-shadow: var(--shadow);
+        }
+        .brand-title {
+            margin: 0;
+            font-weight: 800;
+            color: var(--text-main);
+        }
+        .brand-subtitle {
+            margin: 2px 0 0;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 18px;
+            align-items: flex-end;
+            padding: 4px 0 18px;
+            border-bottom: 1px solid var(--line);
+            margin-bottom: 18px;
+        }
+        .page-header h1 {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 2rem;
+            line-height: 1.18;
+            letter-spacing: 0;
+        }
+        .page-header p {
+            margin: 8px 0 0;
+            color: var(--text-muted);
+            max-width: 680px;
+        }
+        .header-meta {
+            color: var(--teal);
+            border: 1px solid #99f6e4;
+            background: #f0fdfa;
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 0.86rem;
+            white-space: nowrap;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(148px, 1fr));
+            gap: 12px;
+            margin: 2px 0 22px;
+        }
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            padding: 15px 16px;
+            box-shadow: var(--shadow);
+            min-height: 112px;
+        }
+        .stat-card span {
+            color: var(--text-muted);
+            font-size: 0.88rem;
+        }
+        .stat-card strong {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-main);
+            font-size: 1.8rem;
+            line-height: 1.1;
+        }
+        .stat-card small {
+            display: block;
+            margin-top: 8px;
+            color: var(--text-muted);
+        }
+        .stat-card.blue { border-top: 3px solid var(--blue); }
+        .stat-card.teal { border-top: 3px solid var(--teal); }
+        .stat-card.orange { border-top: 3px solid var(--orange); }
+        .stat-card.red { border-top: 3px solid var(--red); }
+        .stat-card.gray { border-top: 3px solid #64748b; }
+        .section-title {
+            margin: 26px 0 12px;
+        }
+        .section-title h2 {
+            margin: 0;
+            color: var(--text-main);
+            font-size: 1.28rem;
+            line-height: 1.3;
+            letter-spacing: 0;
+        }
+        .section-title p {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 0.94rem;
+        }
+        .toolbar-note {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin: 0 0 10px;
+        }
+        .question-head {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+        .question-number {
+            color: var(--text-muted);
+            font-size: 0.86rem;
+            font-weight: 700;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            min-height: 24px;
+            border-radius: 7px;
+            padding: 2px 8px;
+            font-size: 0.78rem;
+            font-weight: 700;
+            border: 1px solid var(--line);
+            background: var(--surface-soft);
+            color: var(--text-muted);
+        }
+        .chip.blue {
+            color: var(--blue);
+            border-color: #bfdbfe;
+            background: #eff6ff;
+        }
+        .chip.teal {
+            color: var(--teal);
+            border-color: #99f6e4;
+            background: #f0fdfa;
+        }
+        .chip.orange {
+            color: var(--orange);
+            border-color: #fed7aa;
+            background: #fff7ed;
+        }
+        .question-stem {
+            color: var(--text-main);
+            font-weight: 760;
+            font-size: 1.02rem;
+            line-height: 1.65;
+            margin-bottom: 8px;
+        }
+        div[data-testid="stVerticalBlockBorderWrapper"] {
+            border-color: var(--line);
+            border-radius: 8px;
+            box-shadow: 0 6px 18px rgba(15, 23, 42, 0.045);
+            background: var(--surface);
+        }
+        div[data-testid="stDataFrame"] {
+            border: 1px solid var(--line);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
         }
         .muted {
-            color: #64748b;
+            color: var(--text-muted);
             font-size: 0.92rem;
         }
         div[data-testid="stMetricValue"] {
-            font-size: 1.8rem;
+            font-size: 1.7rem;
+        }
+        div[data-testid="stButton"] > button,
+        div[data-testid="stDownloadButton"] > button {
+            border-radius: 8px;
+            min-height: 42px;
+            font-weight: 760;
+            letter-spacing: 0;
+        }
+        div[data-testid="stButton"] > button[kind="primary"] {
+            background: var(--blue);
+            border-color: var(--blue);
+        }
+        div[data-testid="stAlert"] {
+            border-radius: 8px;
+            border: 1px solid var(--line);
+        }
+        div[data-testid="stExpander"] {
+            border-radius: 8px;
+            border-color: var(--line);
+            background: var(--surface);
+        }
+        textarea, input, div[data-baseweb="select"] > div {
+            border-radius: 8px !important;
+        }
+        @media (max-width: 780px) {
+            .page-header {
+                display: block;
+            }
+            .header-meta {
+                display: inline-block;
+                margin-top: 12px;
+            }
+            .page-header h1 {
+                font-size: 1.58rem;
+            }
         }
         </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def safe_text(value: object) -> str:
+    return escape(str(value), quote=True)
+
+
+def render_page_header(title: str, description: str, meta: str | None = None) -> None:
+    meta_html = f'<div class="header-meta">{safe_text(meta)}</div>' if meta else ""
+    st.markdown(
+        f"""
+        <div class="page-header">
+            <div>
+                <h1>{safe_text(title)}</h1>
+                <p>{safe_text(description)}</p>
+            </div>
+            {meta_html}
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def render_metric_cards(metrics: list[dict[str, str]]) -> None:
+    cards = []
+    for metric in metrics:
+        tone = safe_text(metric.get("tone", "gray"))
+        cards.append(
+            f'<div class="stat-card {tone}">'
+            f'<span>{safe_text(metric["label"])}</span>'
+            f'<strong>{safe_text(metric["value"])}</strong>'
+            f'<small>{safe_text(metric["note"])}</small>'
+            f"</div>"
+        )
+    st.markdown(f'<div class="metric-grid">{"".join(cards)}</div>', unsafe_allow_html=True)
+
+
+def render_section_title(title: str, description: str = "") -> None:
+    description_html = f"<p>{safe_text(description)}</p>" if description else ""
+    st.markdown(
+        f"""
+        <div class="section-title">
+            <h2>{safe_text(title)}</h2>
+            {description_html}
+        </div>
         """,
         unsafe_allow_html=True,
     )
@@ -103,16 +392,19 @@ def option_value(label: str) -> str:
 
 
 def render_home() -> None:
-    st.title("Python课程智能复习与自测系统")
+    render_page_header("Python课程智能复习与自测系统", "题库状态、练习表现和错题情况集中查看", "课程期末大作业")
     overview = get_overview()
-    cols = st.columns(5)
-    cols[0].metric("题目数", overview["question_count"])
-    cols[1].metric("章节数", overview["chapter_count"])
-    cols[2].metric("练习次数", overview["quiz_count"])
-    cols[3].metric("平均正确率", f"{overview['avg_accuracy'] * 100:.1f}%")
-    cols[4].metric("累计错题", overview["wrong_count"])
+    render_metric_cards(
+        [
+            {"label": "题目数", "value": str(overview["question_count"]), "note": "初始题库规模", "tone": "blue"},
+            {"label": "章节数", "value": str(overview["chapter_count"]), "note": "课程知识覆盖", "tone": "teal"},
+            {"label": "练习次数", "value": str(overview["quiz_count"]), "note": "累计自测记录", "tone": "orange"},
+            {"label": "平均正确率", "value": f"{overview['avg_accuracy'] * 100:.1f}%", "note": "全部答题表现", "tone": "gray"},
+            {"label": "累计错题", "value": str(overview["wrong_count"]), "note": "需要复盘内容", "tone": "red"},
+        ]
+    )
 
-    st.subheader("章节题量")
+    render_section_title("章节题量", "检查 7 个课程章节的题目覆盖是否均衡")
     counts = question_counts_by_chapter()
     if counts:
         df = pd.DataFrame(counts).rename(columns={"chapter": "章节", "question_count": "题目数"})
@@ -121,7 +413,7 @@ def render_home() -> None:
     else:
         st.info("题库为空。")
 
-    st.subheader("最近练习")
+    render_section_title("最近练习", "展示最近的自测结果")
     records = list_quiz_records(limit=8)
     if records:
         records_df = pd.DataFrame(records).rename(
@@ -139,11 +431,12 @@ def render_home() -> None:
 
 
 def render_question_bank() -> None:
-    st.title("题库管理")
+    render_page_header("题库管理", "按章节、题型和关键词维护复习题目", "42 道初始题")
     chapters = ["全部章节"] + get_chapters()
     type_options = ["全部题型"] + list(TYPE_LABELS.values())
 
-    with st.container():
+    with st.container(border=True):
+        st.markdown('<p class="toolbar-note">筛选题目</p>', unsafe_allow_html=True)
         col1, col2, col3 = st.columns([1.2, 1.0, 1.8])
         chapter = col1.selectbox("章节筛选", chapters)
         type_label = col2.selectbox("题型筛选", type_options)
@@ -162,8 +455,7 @@ def render_question_bank() -> None:
     else:
         st.info("没有符合条件的题目。")
 
-    st.divider()
-    st.subheader("新增题目")
+    render_section_title("新增题目", "录入后会直接写入本地 SQLite 题库")
     with st.form("add_question_form", clear_on_submit=True):
         col1, col2, col3 = st.columns([1.2, 1.0, 1.0])
         new_chapter = col1.text_input("章节", value="第1章 Python导论")
@@ -206,8 +498,19 @@ def render_question_bank() -> None:
             st.error(str(exc))
 
 
-def render_quiz_question(question: Question) -> str:
-    st.markdown(f"**{question.id}. {question.stem}**")
+def render_quiz_question(question: Question, index: int, total: int) -> str:
+    tone = TYPE_TONES.get(question.question_type, "gray")
+    st.markdown(
+        f"""
+        <div class="question-head">
+            <span class="question-number">第 {index} / {total} 题</span>
+            <span class="chip {tone}">{safe_text(TYPE_LABELS.get(question.question_type, question.question_type))}</span>
+            <span class="chip">{safe_text(question.difficulty)}</span>
+        </div>
+        <div class="question-stem">{safe_text(question.stem)}</div>
+        """,
+        unsafe_allow_html=True,
+    )
     key = f"answer_{question.id}"
     if question.question_type == "single":
         selected = st.radio("选择答案", question.options, key=key, index=None, label_visibility="collapsed")
@@ -219,18 +522,23 @@ def render_quiz_question(question: Question) -> str:
 
 
 def render_quiz() -> None:
-    st.title("自测练习")
+    render_page_header("自测练习", "选择章节和题量后生成一轮练习", "提交前检查未作答")
     chapters = ["全部章节"] + get_chapters()
     question_total = count_questions()
     if question_total == 0:
         st.warning("题库为空，请先添加题目。")
         return
 
-    col1, col2 = st.columns([1.3, 1.0])
-    chapter = col1.selectbox("选择章节", chapters)
-    quiz_size = col2.slider("题量", min_value=1, max_value=min(10, question_total), value=min(5, question_total))
+    with st.container(border=True):
+        st.markdown('<p class="toolbar-note">出题设置</p>', unsafe_allow_html=True)
+        col1, col2, col3 = st.columns([1.4, 1.0, 0.8])
+        chapter = col1.selectbox("选择章节", chapters)
+        quiz_size = col2.slider("题量", min_value=1, max_value=min(10, question_total), value=min(5, question_total))
+        col3.write("")
+        col3.write("")
+        start_quiz = col3.button("开始自测", type="primary", use_container_width=True)
 
-    if st.button("开始自测", type="primary"):
+    if start_quiz:
         session = build_quiz(chapter, quiz_size)
         if session.total == 0:
             st.warning("当前章节没有题目。")
@@ -247,11 +555,12 @@ def render_quiz() -> None:
     questions = [question for question_id in question_ids if (question := get_question(question_id))]
     session = build_quiz_from_ids(question_ids, st.session_state.get("quiz_chapter_scope", chapter))
 
+    render_section_title("本轮题目", f"共 {len(questions)} 道题")
     with st.form("quiz_form"):
         answers: dict[int, str] = {}
-        for question in questions:
+        for index, question in enumerate(questions, start=1):
             with st.container(border=True):
-                answers[int(question.id)] = render_quiz_question(question)
+                answers[int(question.id)] = render_quiz_question(question, index, len(questions))
             st.write("")
         submitted = st.form_submit_button("提交答案")
 
@@ -283,15 +592,18 @@ def render_quiz() -> None:
 
 
 def render_wrong_book() -> None:
-    st.title("错题本")
+    render_page_header("错题本", "集中复盘错题和薄弱章节", "支持错题回练")
     chapters = ["全部章节"] + get_chapters()
     chapter = st.selectbox("章节筛选", chapters, key="wrong_chapter")
     wrong_answers = list_wrong_answers(chapter=None if chapter == "全部章节" else chapter)
 
-    col1, col2 = st.columns([1, 1])
-    col1.metric("错题记录", len(wrong_answers))
     wrong_ids = unique_wrong_question_ids(chapter=None if chapter == "全部章节" else chapter)
-    col2.metric("去重题目", len(wrong_ids))
+    render_metric_cards(
+        [
+            {"label": "错题记录", "value": str(len(wrong_answers)), "note": "包含重复做错记录", "tone": "red"},
+            {"label": "去重题目", "value": str(len(wrong_ids)), "note": "可用于回练", "tone": "orange"},
+        ]
+    )
 
     if wrong_ids and st.button("从错题开始回练"):
         st.session_state.quiz_question_ids = wrong_ids[:10]
@@ -312,49 +624,55 @@ def render_wrong_book() -> None:
 
 
 def render_statistics_and_report() -> None:
-    st.title("学习统计与报告")
+    render_page_header("学习统计与报告", "汇总答题表现并生成 Markdown 学习报告", "可导出")
     overview = get_overview()
-    cols = st.columns(4)
-    cols[0].metric("练习次数", overview["quiz_count"])
-    cols[1].metric("平均正确率", f"{overview['avg_accuracy'] * 100:.1f}%")
-    cols[2].metric("累计错题", overview["wrong_count"])
-    cols[3].metric("题库题目", overview["question_count"])
+    render_metric_cards(
+        [
+            {"label": "练习次数", "value": str(overview["quiz_count"]), "note": "累计练习", "tone": "orange"},
+            {"label": "平均正确率", "value": f"{overview['avg_accuracy'] * 100:.1f}%", "note": "整体表现", "tone": "teal"},
+            {"label": "累计错题", "value": str(overview["wrong_count"]), "note": "复盘重点", "tone": "red"},
+            {"label": "题库题目", "value": str(overview["question_count"]), "note": "题库规模", "tone": "blue"},
+        ]
+    )
 
-    st.subheader("章节正确率")
-    accuracy = chapter_accuracy()
-    if accuracy:
-        df = pd.DataFrame(accuracy)
-        df["正确率"] = (df["accuracy"] * 100).round(1)
-        chart_df = df.rename(columns={"chapter": "章节"})
-        render_horizontal_bar(chart_df, "正确率", "章节")
-        st.dataframe(
-            chart_df.rename(columns={"total": "答题数", "correct": "正确数", "accuracy": "正确率原值"})[
-                ["章节", "答题数", "正确数", "正确率"]
-            ],
-            use_container_width=True,
-            hide_index=True,
-        )
-    else:
-        st.info("暂无练习记录。")
+    stats_tab, report_tab = st.tabs(["统计图表", "报告预览"])
+    with stats_tab:
+        render_section_title("章节正确率")
+        accuracy = chapter_accuracy()
+        if accuracy:
+            df = pd.DataFrame(accuracy)
+            df["正确率"] = (df["accuracy"] * 100).round(1)
+            chart_df = df.rename(columns={"chapter": "章节"})
+            render_horizontal_bar(chart_df, "正确率", "章节")
+            st.dataframe(
+                chart_df.rename(columns={"total": "答题数", "correct": "正确数", "accuracy": "正确率原值"})[
+                    ["章节", "答题数", "正确数", "正确率"]
+                ],
+                use_container_width=True,
+                hide_index=True,
+            )
+        else:
+            st.info("暂无练习记录。")
 
-    st.subheader("错题分布")
-    wrong_stats = wrong_counts_by_chapter()
-    if wrong_stats:
-        wrong_df = pd.DataFrame(wrong_stats).rename(columns={"chapter": "章节", "wrong_count": "错题数"})
-        render_horizontal_bar(wrong_df, "错题数", "章节", color="#dc2626")
-    else:
-        st.info("暂无错题分布。")
+        render_section_title("错题分布")
+        wrong_stats = wrong_counts_by_chapter()
+        if wrong_stats:
+            wrong_df = pd.DataFrame(wrong_stats).rename(columns={"chapter": "章节", "wrong_count": "错题数"})
+            render_horizontal_bar(wrong_df, "错题数", "章节", color="#dc2626")
+        else:
+            st.info("暂无错题分布。")
 
-    st.subheader("学习报告")
-    report_text = generate_report_text()
-    st.download_button("下载报告文本", data=report_text, file_name="study_report.md", mime="text/markdown")
-    if st.button("导出到本地 exports 目录"):
-        output_path = export_report()
-        st.success(f"已导出：{output_path}")
+    with report_tab:
+        report_text = generate_report_text()
+        st.download_button("下载报告文本", data=report_text, file_name="study_report.md", mime="text/markdown")
+        if st.button("导出到本地 exports 目录"):
+            output_path = export_report()
+            st.success(f"已导出：{output_path}")
+        st.text_area("报告预览", report_text, height=360)
 
 
 def render_agent_records() -> None:
-    st.title("Agent协作记录")
+    render_page_header("Agent协作记录", "保留关键提示词、采纳内容和验证结果", "报告素材")
     record_path = Path("docs/06_Agent协作记录.md")
     if record_path.exists():
         st.markdown(record_path.read_text(encoding="utf-8"))
@@ -376,7 +694,18 @@ def main() -> None:
         "Agent协作记录": render_agent_records,
     }
     with st.sidebar:
-        st.header("python-review-quiz")
+        st.markdown(
+            """
+            <div class="sidebar-brand">
+                <div class="brand-mark">PY</div>
+                <div>
+                    <p class="brand-title">python-review-quiz</p>
+                    <p class="brand-subtitle">Python课程复习系统</p>
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
         selected_page = st.radio("导航", list(pages.keys()))
         st.caption("Python课程期末大作业")
 
